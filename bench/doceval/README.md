@@ -73,7 +73,7 @@ Or drive a server directly:
 
 ```sh
 python3 run_doceval.py --vault /private/tmp/doceval-vault --run \
-  --api ollama --upstream http://192.168.68.104:11434 \
+  --api ollama --upstream http://127.0.0.1:11434 \
   --model qwen3.6:35b-mlx-32k --num-ctx 32768 --dry-run
 ```
 

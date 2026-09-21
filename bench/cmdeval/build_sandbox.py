@@ -68,7 +68,7 @@ TREE = {
 
 WIRED_LIMIT_MB = "26624"
 MEMSIZE_BYTES = "34359738368"
-OLLAMA_ADDR = "192.168.68.104"
+OLLAMA_ADDR = "192.168.1.50"  # synthetic fixture value, not a real machine's address
 OLLAMA_PORT = "11434"
 EXT_MOUNT = "/Volumes/ExtremeSSD"
 EXT_FREE = "640Gi"
@@ -118,7 +118,7 @@ IFCONFIG = f'''#!/bin/sh
 printf 'lo0: flags=8049<UP,LOOPBACK,RUNNING,MULTICAST> mtu 16384\\n'
 printf '\\tinet 127.0.0.1 netmask 0xff000000\\n'
 printf 'en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500\\n'
-printf '\\tinet {OLLAMA_ADDR} netmask 0xffffff00 broadcast 192.168.68.255\\n'
+printf '\\tinet {OLLAMA_ADDR} netmask 0xffffff00 broadcast 192.168.1.255\\n'
 printf '\\tstatus: active\\n'
 '''
 

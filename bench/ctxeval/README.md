@@ -61,7 +61,7 @@ requests, and a 24k prefill alone costs about a minute. Start small:
 ```sh
 python3 run_ctxeval.py --build /private/tmp/ctx-hay \
   --lengths 1000 8000 --depths 0.0 0.5 1.0 \
-  --run --api ollama --upstream http://192.168.68.104:11434 \
+  --run --api ollama --upstream http://127.0.0.1:11434 \
   --model qwen3.6:35b-a3b-q4_K_M-32k --num-ctx 32768 \
   --answers /private/tmp/ctx-run --dry-run
 ```

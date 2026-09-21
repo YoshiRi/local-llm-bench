@@ -11,7 +11,7 @@
     <string>--model</string>
     <string>/Users/yoshiri/.cache/huggingface/hub/models--mlx-community--Qwen3-Coder-30B-A3B-Instruct-4bit/snapshots/6e302ea604ad9ab206367e2c501d1571023e7b6d</string>
     <string>--host</string>
-    <string>192.168.68.104</string>
+    <string>0.0.0.0</string>
     <string>--port</string>
     <string>8080</string>
     <string>--trust-remote-code</string>

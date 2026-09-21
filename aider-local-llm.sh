@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export OLLAMA_API_BASE="${OLLAMA_API_BASE:-http://192.168.68.104:11434}"
+export OLLAMA_API_BASE="${OLLAMA_API_BASE:-http://127.0.0.1:11434}"
 
 exec /Users/yoshiri/.local/bin/aider \
   --no-check-update \

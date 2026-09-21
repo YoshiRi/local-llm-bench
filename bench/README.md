@@ -1,13 +1,16 @@
 # Local CLI evaluation harness
 
-No GPU evaluation was run while developing this harness. It has only been
-syntax-checked and exercised with `--dry-run`; real CLI/provider integrations
-remain unverified. Existing Codex settings are never edited.
+This top-level `run_eval.py` (the original general-purpose CLI harness) has
+not been run for real — only syntax-checked and exercised with `--dry-run`;
+real CLI/provider integrations remain unverified here. Existing Codex settings
+are never edited. **The four task-specific suites below (`doceval/`,
+`cmdeval/`, `giteval/`, `ctxeval/`) are separate harnesses and have been run
+extensively** — see each one's own README and `INVOCATIONS.md`.
 
 ```sh
 python3 run_eval.py --cli codex --provider ollama \
   --model qwen3.6:35b-mlx-32k --trials 3 \
-  --upstream http://192.168.68.104:11434 \
+  --upstream http://127.0.0.1:11434 \
   --cli-bin /Applications/ChatGPT.app/Contents/Resources/codex --dry-run
 ```
 

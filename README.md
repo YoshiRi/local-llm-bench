@@ -19,11 +19,11 @@ M4 Mac mini 32GBで動かすローカルLLMの運用スクリプトと評価ハ�
 
 ## サーバー
 
-Ollamaは`OLLAMA_HOST=0.0.0.0:11434`で全インターフェースにbind（2026-09-21変更）。
+Ollamaは`OLLAMA_HOST=0.0.0.0:11434`で全インターフェースにbind（2026-09-21変更）。実際のLAN IP・Tailscale IPは環境ごとに異なるため、このリポジトリには含めていない。`OLLAMA_LAN_HOST`/`OLLAMA_TAILSCALE_HOST`のような環境変数に自分の値を入れて使う。
 
 - ローカル: `http://127.0.0.1:11434`
-- 自宅LAN: `http://192.168.68.104:11434`（IPは環境依存、変わったらplistを更新）
-- Tailscale経由（外出先含む）: `http://100.122.92.105:11434`（tailnet上のホスト名`macmini`）
+- 自宅LAN: `http://${OLLAMA_LAN_HOST}:11434`（`ipconfig getifaddr en0`等で確認、変わったらplistを更新）
+- Tailscale経由（外出先含む）: `http://${OLLAMA_TAILSCALE_HOST}:11434`（`tailscale status`でこのMacのIPを確認）
 
 **設定変更時の注意:** `~/Library/LaunchAgents/com.yoshiri.ollama-host.plist`を編集した後は`launchctl bootout`→`bootstrap`で再読込し、さらに**Ollama.appを完全に終了・再起動**しないと新しい`OLLAMA_HOST`が反映されない（実行中の`ollama serve`は起動時点の値をキャッシュしているため、`launchctl setenv`を後から呼んでも効かない）。
 
@@ -51,7 +51,7 @@ cd /path/to/project
 ## 別PCから使う（Aider）
 
 ```sh
-export OLLAMA_API_BASE=http://100.122.92.105:11434   # Tailscale経由。LAN内なら192.168.68.104
+export OLLAMA_API_BASE=http://${OLLAMA_TAILSCALE_HOST}:11434   # Tailscale経由。LAN内ならOLLAMA_LAN_HOST
 aider --model ollama_chat/qwen3.6:35b-a3b-q4_K_M \
   --weak-model ollama_chat/qwen3.6:35b-a3b-q4_K_M \
   --editor-model ollama_chat/qwen3.6:35b-a3b-q4_K_M
@@ -60,7 +60,7 @@ aider --model ollama_chat/qwen3.6:35b-a3b-q4_K_M \
 接続確認（スマホのブラウザでも可、"Ollama is running"と表示されればOK）:
 
 ```sh
-curl http://100.122.92.105:11434/api/tags
+curl http://${OLLAMA_TAILSCALE_HOST}:11434/api/tags
 ```
 
 ## Claude Code から mlx_lm.server（DWQ v2）を使う

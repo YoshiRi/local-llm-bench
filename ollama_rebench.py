@@ -6,7 +6,7 @@ import threading
 import time
 import urllib.request
 
-BASE = 'http://192.168.68.104:11434'
+BASE = os.environ.get('OLLAMA_BASE', 'http://127.0.0.1:11434')
 ROOT = Path('/private/tmp/aider-quality-eval/ollama-rebench-20260919')
 MODELS = ['qwen3.6:35b-mlx', 'qwen3.6:35b-a3b-q4_K_M']
 PROMPT = ('Fix parse_duration() so that all tests pass. Preserve the public API, '
