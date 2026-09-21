@@ -107,3 +107,11 @@ apart from a model failure and reported as inconclusive. HTTP transport and the
 truncation rule come from `doceval/transport.py`, shared so the two suites
 cannot drift. See `ctxeval/README.md`.
 
+## Typed-decision set (`jeveval/`)
+
+`jeveval/` asks whether a small decision-only model (Jev-style: probabilities
+over allowed options, no generated text) can act as a router/guardrail/scorer
+in front of the big models. Three tasks with machine-checkable keys: the
+`domain/*` tag of a real vault note, which of two sentences is natural
+Japanese, and whether a line contains planted PII. Backend under test is SemIf
+(MLX, Qwen3.5-4B 4-bit). Results and how to run: `jeveval/README.md`.

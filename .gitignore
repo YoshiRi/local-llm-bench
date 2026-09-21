@@ -8,3 +8,6 @@ __pycache__/
 
 # Secrets / local overrides (none tracked intentionally, but guard anyway)
 .env
+
+# SemIf checkout (cloned separately; its own venv and HF downloads)
+semif/
