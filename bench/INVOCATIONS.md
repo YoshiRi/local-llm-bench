@@ -154,13 +154,18 @@ mlx_lm.server --model mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit-dwq-v2 \
   --default-temperature 0.6 --depth 2 --unsafe-force-unverified --yes \
   --ssd-session-cache off
 
-# mtplx serve for remote clients (Claude Code on another machine over LAN/Tailscale).
-# Two things change: a non-localhost --host REQUIRES --api-key (--no-auth is refused),
-# and Claude Code's ~16-19k-token first request needs more than the default 28,672
-# context. --kv-quant q8 halves KV memory so --context-window 49152 fits the same
-# 24G engine budget on the 32GB machine (verified: 41.5k-token request, correct
-# answer, no OOM). Client: ANTHROPIC_BASE_URL=http://<host>:8082
-# ANTHROPIC_AUTH_TOKEN=<api-key> claude --model ornith
+# mtplx serve for remote clients over LAN/Tailscale (dsh / Aider / raw chat — NOT Claude Code).
+# A non-localhost --host REQUIRES --api-key (--no-auth is refused). --kv-quant q8
+# halves KV memory so --context-window 49152 fits the 24G engine budget for a
+# single large request (verified: 41.5k tokens, correct answer, no OOM).
+#
+# BUT Claude Code sessions do not work against this on the 32GB machine, whatever
+# the window: its ~19k-token per-turn prefill drives MTPLX's allocator past 100%
+# (pressure_trim, remote clients get 507 "insufficient memory ... during prefill"),
+# the prefix cache is evicted every turn, and a trivial 8-turn task took 25 min
+# locally. Weights 19.4G + 19k prefill + KV + scratch simply exceed the budget.
+# Use Ollama Qwen3.6 MLX/GGUF for Claude Code; reserve Ornith for clients whose
+# prompts are a few k tokens, where its 2-3x speed actually shows.
 /Users/yoshiri/Documents/local-llm/.venv-mtplx/bin/mtplx serve \
   --model /Volumes/ExtremeSSD/LocalLLM/backup-20260919-235029/MLX/wang-yang--Ornith-1.5-35B-A3B-MTPLX-4bit/44d09b73035cb12dcb474c3c0d1c8629acdcf5ba \
   --model-id ornith --host 0.0.0.0 --port 8082 --api-key <choose-one> \
