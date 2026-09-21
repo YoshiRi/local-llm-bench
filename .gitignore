@@ -1,0 +1,10 @@
+# Python virtual environments
+.venv-mtplx/
+__pycache__/
+*.pyc
+
+# Runtime logs
+*.log
+
+# Secrets / local overrides (none tracked intentionally, but guard anyway)
+.env

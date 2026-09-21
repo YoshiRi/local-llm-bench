@@ -1,0 +1,8 @@
+{"binary": "/opt/homebrew/bin/codex", "mode": "baseline", "seconds": 0.010921291999999999, "timeout": false, "exit": 0, "stdout": "codex-cli 0.154.0\n", "stderr": ""}
+{"binary": "/opt/homebrew/bin/codex", "mode": "rust_log", "seconds": 0.009150709, "timeout": false, "exit": 0, "stdout": "codex-cli 0.154.0\n", "stderr": ""}
+{"binary": "/opt/homebrew/bin/codex", "mode": "empty_home", "seconds": 0.008501666999999997, "timeout": false, "exit": 0, "stdout": "codex-cli 0.154.0\n", "stderr": ""}
+{"binary": "/opt/homebrew/bin/codex", "mode": "network_denied", "seconds": 0.014023875000000005, "timeout": false, "exit": 0, "stdout": "codex-cli 0.154.0\n", "stderr": ""}
+{"binary": "/Applications/ChatGPT.app/Contents/Resources/codex", "mode": "baseline", "seconds": 0.008312166000000003, "timeout": false, "exit": 0, "stdout": "codex-cli 0.153.4\n", "stderr": ""}
+{"binary": "/Applications/ChatGPT.app/Contents/Resources/codex", "mode": "rust_log", "seconds": 0.007674708000000002, "timeout": false, "exit": 0, "stdout": "codex-cli 0.153.4\n", "stderr": ""}
+{"binary": "/Applications/ChatGPT.app/Contents/Resources/codex", "mode": "empty_home", "seconds": 0.007568167000000001, "timeout": false, "exit": 0, "stdout": "codex-cli 0.153.4\n", "stderr": ""}
+{"binary": "/Applications/ChatGPT.app/Contents/Resources/codex", "mode": "network_denied", "seconds": 0.013453959000000001, "timeout": false, "exit": 0, "stdout": "codex-cli 0.153.4\n", "stderr": ""}

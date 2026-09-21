@@ -1,0 +1,9 @@
+model_list:
+  - model_name: dwq-v2
+    litellm_params:
+      model: hosted_vllm/default_model
+      api_base: http://127.0.0.1:8081/v1
+      api_key: sk-local
+      use_chat_completions_api: true
+litellm_settings:
+  drop_params: true
