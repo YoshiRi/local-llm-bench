@@ -10,6 +10,7 @@ M4 Mac mini 32GBで動かすローカルLLMの運用スクリプトと評価ハ�
 | --- | --- |
 | `bench/` | 評価ハーネス本体（doceval/cmdeval/giteval/ctxeval）。設計・使い方は`bench/README.md`、実際の呼び出しコマンド集は`bench/INVOCATIONS.md` |
 | `aider-local-llm.sh` | このMacでAiderをローカルモデルに向けて起動するラッパー |
+| `serve-ornith.sh` | Ornith-1.5(MTPLX)をLAN/Tailscale向けにホストする `start/stop/status`。起動前にOllamaのモデルを自動アンロード（同時ロード不可）。dsh/Aider/生API用、Claude Codeの対話セッションには使わない |
 | `litellm-dwq-v2.yaml` | LiteLLM設定。`mlx_lm.server`（OpenAI Chat Completions限定）をClaude Code向けのAnthropic/Responses互換に変換するブリッジ |
 | `backup_models.py` | モデルを外付けディスクへコピー（元ファイルは削除しない、SHA-256照合込み） |
 | `remove_backed_up_ornith.py` / `remove_backed_up_qwen_mxfp4.py` | 退避・照合済みモデルのみを内蔵ディスクから削除するスクリプト（対象限定、他ファイルは触らない） |
