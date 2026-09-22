@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  iogpu.wired_limit_mb は再起動で 0（既定=物理メモリの約65%）に戻り、
+  22GB級のモデルが「requires 22.0 GiB but only 20.8 GiB available」で載らなくなる。
+  macOS は /etc/sysctl.conf を読まないので、起動時に LaunchDaemon（root）で設定する。
+  LaunchDaemon はユーザーの LaunchAgent（Ollama）より先に走るので、Ollama は設定後の値を見る。
+
+  導入（要 sudo）:
+    sudo cp launchd/com.yoshiri.iogpu-wired-limit.plist /Library/LaunchDaemons/
+    sudo chown root:wheel /Library/LaunchDaemons/com.yoshiri.iogpu-wired-limit.plist
+    sudo chmod 644 /Library/LaunchDaemons/com.yoshiri.iogpu-wired-limit.plist
+    sudo launchctl bootstrap system /Library/LaunchDaemons/com.yoshiri.iogpu-wired-limit.plist
+  確認: sysctl iogpu.wired_limit_mb  → 26624
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.yoshiri.iogpu-wired-limit</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/sbin/sysctl</string>
+    <string>iogpu.wired_limit_mb=26624</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/private/tmp/iogpu-wired-limit.log</string>
+  <key>StandardErrorPath</key>
+  <string>/private/tmp/iogpu-wired-limit.log</string>
+</dict>
+</plist>

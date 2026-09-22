@@ -21,6 +21,7 @@ M4 Mac mini 32GBで動かすローカルLLMの運用スクリプトと評価ハ�
 | `ollama_evict.py` / `ollama_restore.py` | Ollamaのタグを外付けSSD（`backup-20260919-235029/Ollama/`）へ退避・復元。SHA-256照合付き、再DL不要。外付け未接続なら何もしない。内蔵には常用モデルだけ残す方針（2026-09-22） |
 | `download_jundot.py` | 個別モデルのダウンロードスクリプト例 |
 | `launchd/com.yoshiri.dsh-web*.plist` | dsh Web UI（127.0.0.1:3081）とTCPプロキシ（Tailscale IP:3080）を常駐化するLaunchAgentの雛形（`<TAILSCALE_IP>`/`<LAN_IP>`を置換して`~/Library/LaunchAgents/`へ）。作業ディレクトリは`~/dsh-workspace`、プロキシは`~/.local/bin/tcp-proxy.py`——launchd起動プロセスは`~/Documents`配下にTCCで触れないため外に置く。`serve-dsh-web.sh`はLaunchAgent導入済みなら`launchctl`経由で制御する |
+| `launchd/com.yoshiri.iogpu-wired-limit.plist` | 起動時に`iogpu.wired_limit_mb=26624`を設定するLaunchDaemon（`/Library/LaunchDaemons/`へ、要sudo）。再起動で0に戻り22GB級モデルが載らなくなるのを防ぐ。macOSは`/etc/sysctl.conf`を読まない |
 | `com.yoshiri.ollama-host.plist` / `com.yoshiri.mlx-qwen-coder.plist` | launchd設定（`~/Library/LaunchAgents/`に実体を配置）。前者はOllamaの`OLLAMA_HOST`・`OLLAMA_MAX_LOADED_MODELS=1`・`OLLAMA_KEEP_ALIVE=30m`を設定 |
 
 ## サーバー
