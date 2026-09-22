@@ -20,7 +20,8 @@ llm-pi-ai:
       api: openai-completions
       baseURL: http://<MAC_IP>:11434/v1
       models:
-        - id: qwen3.6:35b-mlx-32k          # Claude Code の決定版。dsh 経由での体感は未検証
+        - id: qwen3.6:35b-a3b-mtp-q4_K_M   # MTP投機デコード版GGUF。thinking/コードで37〜41 tok/s(Ornith級、draft_num_predict 2既定)
+        - id: qwen3.6:35b-mlx-32k          # Claude Code の決定版。dsh 経由 約30 tok/s
         - id: qwen3.6:35b-a3b-q4_K_M-32k   # GGUF。dsh 経由 parse_duration 119秒 / cmdeval 547.6秒
         - id: gemma4:26b-a4b-it-mtp-q4_K_M # 精度は同水準、速度は Qwen3.6 の 1.3〜2 倍遅い
 agent-default-model:
