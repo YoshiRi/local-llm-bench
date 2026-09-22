@@ -5,12 +5,14 @@
 <dict>
   <key>Label</key>
   <string>com.yoshiri.ollama-host</string>
+  <!-- Ollama.app が起動時に読む環境変数。変更後は bootout/bootstrap し、Ollama.app を再起動すること。
+       OLLAMA_MAX_LOADED_MODELS=1: 32GB機で大モデルを同時に2つ載せない（別モデルの会話を始めたら前のを必ず落とす）
+       OLLAMA_KEEP_ALIVE=30m: 対話の合間の冷間ロード(20〜60秒)を避ける。Ornith を立てる時は serve-ornith.sh が明示的にアンロードする -->
   <key>ProgramArguments</key>
   <array>
-    <string>/bin/launchctl</string>
-    <string>setenv</string>
-    <string>OLLAMA_HOST</string>
-    <string>0.0.0.0:11434</string>
+    <string>/bin/sh</string>
+    <string>-c</string>
+    <string>launchctl setenv OLLAMA_HOST 0.0.0.0:11434; launchctl setenv OLLAMA_MAX_LOADED_MODELS 1; launchctl setenv OLLAMA_KEEP_ALIVE 30m</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
