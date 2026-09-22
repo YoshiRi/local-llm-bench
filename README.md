@@ -10,6 +10,7 @@ M4 Mac mini 32GBで動かすローカルLLMの運用スクリプトと評価ハ�
 | --- | --- |
 | `bench/` | 評価ハーネス本体（doceval/cmdeval/giteval/ctxeval）。設計・使い方は`bench/README.md`、実際の呼び出しコマンド集は`bench/INVOCATIONS.md` |
 | `aider-local-llm.sh` | このMacでAiderをローカルモデルに向けて起動するラッパー |
+| `dsh-settings.example.yaml` | dshの`~/.dsh/settings.yaml`雛形。Ornith(MTPLX)とOllama(Qwen3.6 MLX/GGUF、Gemma4)を両方登録し、`agent-default-model`で切替。同居制約のメモ付き |
 | `semif-server.py` | SemIf（Jev型の判断専用モデル、MLX、Qwen3.5-4B 4bit）を常駐HTTP化。`/v1/systemone`（Jev/open-jev互換: choice/noul/score）と`/decide`。`semif/.venv/bin/python semif-server.py --port 8090`。`semif/`はSemIfのcheckout（別途clone、git管理外） |
 | `serve-ornith.sh` | Ornith-1.5(MTPLX)をLAN/Tailscale向けにホストする `start/stop/status`。起動前にOllamaのモデルを自動アンロード（同時ロード不可）。dsh/Aider/生API用、Claude Codeの対話セッションには使わない |
 | `litellm-dwq-v2.yaml` | LiteLLM設定。`mlx_lm.server`（OpenAI Chat Completions限定）をClaude Code向けのAnthropic/Responses互換に変換するブリッジ |
