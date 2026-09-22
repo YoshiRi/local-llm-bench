@@ -15,17 +15,20 @@ llm-pi-ai:
       api: openai-completions
       baseURL: http://<MAC_IP>:8082/v1
       models:
-        - id: ornith                       # Ornith-1.5 MTPLX。dsh 向けで最速（cmdeval 257.8秒）
+        - id: ornith # Ornith-1.5 MTPLX。dsh 向けで最速（cmdeval 257.8秒）
+          contextWindow: 28672 # MTPLX の窓。未指定だと dsh は 262,144 とみなし履歴の自動圧縮(0.8×)が走らない
     ollama:
       apiKeyEnv: OLLAMA_API_KEY
       api: openai-completions
       baseURL: http://<MAC_IP>:11434/v1
-      defaultInput: [text, image]         # Qwen3.6 は vision 同梱。dsh は既定 text のみなので画像添付を許可する（Ornith 側には付けない）
+      defaultInput: [ text, image ] # Qwen3.6 は vision 同梱。dsh は既定 text のみなので画像添付を許可する（Ornith 側には付けない）
       models:
-        - id: qwen3.6:35b-a3b-mtp-q4_K_M-32k  # MTP投機デコード版GGUF、num_ctx 32768。thinking/コードで37〜41 tok/s(Ornith級)
-        - id: qwen3.6:35b-a3b-mtp-q4_K_M      # 同上、既定ctx
-        - id: qwen3.6:35b-mlx-32k             # Claude Code の決定版。dsh 経由 約30 tok/s
+        - id: qwen3.6:35b-a3b-mtp-q4_K_M-32k # MTP投機デコード版GGUF、num_ctx 32768。thinking/コードで37〜41 tok/s(Ornith級)
+          contextWindow: 32768 # Ollama は窓超過でエラーを返さず黙って切るので、dsh に窓を教えて自動圧縮を効かせる
+      # 無印タグ（num_ctx 既定 4096）は dsh の初回プロンプト(約7.9k)すら入らないので登録しない
+        - id: qwen3.6:35b-mlx-32k # Claude Code の決定版。dsh 経由での体感は未検証
+          contextWindow: 32768
       # 2026-09-22 に内蔵から退避（ollama_restore.py で戻せる）: qwen3.6:35b-a3b-q4_K_M-32k、gemma4:26b-a4b-it-mtp-q4_K_M
 agent-default-model:
-  provider: ornith
-  model: ornith
+  provider: ollama
+  model: qwen3.6:35b-a3b-mtp-q4_K_M-32k
