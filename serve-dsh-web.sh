@@ -18,7 +18,7 @@ LOCAL_PORT="${DSH_WEB_PORT:-3081}"
 PUBLIC_PORT="${DSH_WEB_PUBLIC_PORT:-3080}"
 LOG=/private/tmp/dsh-web.log
 PROXY_LOG=/private/tmp/dsh-web-proxy.log
-WS="${2:-$HOME/Documents/dsh-workspace}"
+WS="${2:-$HOME/dsh-workspace}"   # ~/Documents の外（launchd 起動時の TCC 制限回避）
 HERE="$(cd "$(dirname "$0")" && pwd)"
 export ORNITH_API_KEY="${ORNITH_API_KEY:-ornith-local}"
 export OLLAMA_API_KEY="${OLLAMA_API_KEY:-ollama}"
@@ -28,7 +28,18 @@ lan_ip() { ipconfig getifaddr en0 2>/dev/null || ifconfig | grep -oE "inet 192\.
 web_pid() { pgrep -f "dsh web --host 127.0.0.1 --port $LOCAL_PORT" | head -n1 || true; }
 proxy_pid() { pgrep -f "tcp-proxy.py --listen .*:$PUBLIC_PORT" | head -n1 || true; }
 
+LA_WEB=com.yoshiri.dsh-web
+LA_PROXY=com.yoshiri.dsh-web-proxy
+la_loaded() { launchctl print "gui/$(id -u)/$1" >/dev/null 2>&1; }
+
 start() {
+  # LaunchAgent が導入済みならそちらで管理（再起動後も自動起動、落ちても再起動）
+  if [ -f "$HOME/Library/LaunchAgents/$LA_WEB.plist" ]; then
+    la_loaded "$LA_WEB"   || launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/$LA_WEB.plist"
+    la_loaded "$LA_PROXY" || launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/$LA_PROXY.plist"
+    for _ in $(seq 1 40); do grep -qE "dsh web: http" "$LOG" 2>/dev/null && break; sleep 2; done
+    status; return 0
+  fi
   if [ -n "$(web_pid)" ]; then echo "既に起動中"; status; return 0; fi
   local ip; ip=$(ts_ip)
   [ -n "$ip" ] || { echo "Tailscaleに接続していない" >&2; exit 1; }
@@ -44,6 +55,11 @@ start() {
 }
 
 stop() {
+  if la_loaded "$LA_WEB" || la_loaded "$LA_PROXY"; then
+    launchctl bootout "gui/$(id -u)/$LA_PROXY" 2>/dev/null && echo "proxy 停止 (launchd)"
+    launchctl bootout "gui/$(id -u)/$LA_WEB" 2>/dev/null && echo "dsh web 停止 (launchd)"
+    return 0
+  fi
   local p
   p=$(proxy_pid); [ -n "$p" ] && kill "$p" && echo "proxy 停止"
   p=$(web_pid); [ -n "$p" ] && { kill "$p"; echo "dsh web 停止"; } || echo "dsh web は起動していない"
@@ -54,7 +70,7 @@ status() {
   local pid; pid=$(web_pid)
   [ -z "$pid" ] && { echo "dsh web: 停止中"; return 0; }
   local token; token=$(grep -oE 'token=[A-Za-z0-9_-]+' "$LOG" | tail -n1)
-  echo "dsh web: 起動中 (pid $pid, workspace $WS)"
+  echo "dsh web: 起動中 (pid $pid$( la_loaded "$LA_WEB" && echo ", launchd管理" ))"
   echo "  スマホ/別PC(tailnet): http://$(ts_ip):$PUBLIC_PORT/?$token"
   [ -n "$(lan_ip)" ] && echo "  LAN (要: LAN側にもproxy)  : http://$(lan_ip):$PUBLIC_PORT/?$token"
   echo "  このMac             : http://127.0.0.1:$LOCAL_PORT/?$token"

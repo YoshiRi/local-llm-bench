@@ -19,6 +19,7 @@ M4 Mac mini 32GBで動かすローカルLLMの運用スクリプトと評価ハ�
 | `remove_backed_up_ornith.py` / `remove_backed_up_qwen_mxfp4.py` | 退避・照合済みモデルのみを内蔵ディスクから削除するスクリプト（対象限定、他ファイルは触らない） |
 | `ollama_footprint.py` / `ollama_rebench.py` | Ollamaのメモリ使用量・生成速度の計測 |
 | `download_jundot.py` | 個別モデルのダウンロードスクリプト例 |
+| `launchd/com.yoshiri.dsh-web*.plist` | dsh Web UI（127.0.0.1:3081）とTCPプロキシ（Tailscale IP:3080）を常駐化するLaunchAgentの雛形（`<TAILSCALE_IP>`/`<LAN_IP>`を置換して`~/Library/LaunchAgents/`へ）。作業ディレクトリは`~/dsh-workspace`、プロキシは`~/.local/bin/tcp-proxy.py`——launchd起動プロセスは`~/Documents`配下にTCCで触れないため外に置く。`serve-dsh-web.sh`はLaunchAgent導入済みなら`launchctl`経由で制御する |
 | `com.yoshiri.ollama-host.plist` / `com.yoshiri.mlx-qwen-coder.plist` | launchd設定（`~/Library/LaunchAgents/`に実体を配置）。前者はOllamaの`OLLAMA_HOST`を設定 |
 
 ## サーバー
