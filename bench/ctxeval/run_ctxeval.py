@@ -184,6 +184,9 @@ def do_run(a, root, key, cases):
         print("[dry-run] no request sent")
         return
     for i, case in enumerate(cases, 1):
+        if a.resume and read_answer(a.answers, case["id"]) is not None:
+            print(f"  [{i}/{len(cases)}] {case['id']}: skipped (already answered)")
+            continue
         prompt = tasklib.prompt(case, document(root, case))
         try:
             text, usage, secs = ask(a, prompt)
@@ -225,6 +228,9 @@ def parser():
     p.add_argument("--temperature", type=float, default=0.0)
     p.add_argument("--timeout", type=float, default=900)
     p.add_argument("--answers", type=Path, default=Path("/private/tmp/local-ctxeval"))
+    p.add_argument("--resume", action="store_true",
+                   help="skip cases whose answer file already exists in --answers "
+                        "(a killed run can be continued without redoing the grid)")
     p.add_argument("--dry-run", action="store_true")
     return p
 

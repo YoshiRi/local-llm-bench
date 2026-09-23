@@ -193,3 +193,20 @@ path (e.g. `/Users/yoshiri/.local/bin/mlx_lm.server`, or the venv's binary
 directly rather than `source .venv/bin/activate && ...`) — the latter form has
 been intermittently rejected by this environment's own safety layer for
 unclear reasons; the direct-path form has not been.
+
+### Resuming a killed ctxeval run
+
+`ctxeval` writes `<case id>.txt` per case as it goes, so a run killed partway
+(session closed, machine restarted) keeps what it finished. Re-issue the same
+command with `--resume` to skip the cases already answered:
+
+```sh
+python3 run_ctxeval.py --haystack /private/tmp/ctx-hay --run --resume \
+  --api ollama --upstream http://127.0.0.1:11434 \
+  --model ornith-1.5:35b-a3b-mtp-32k --num-ctx 32768 --temperature 0.6 \
+  --timeout 400 --answers /private/tmp/ctx-ornith
+```
+
+The haystack must be the same one (`--build` with identical `--lengths`/`--depths`),
+otherwise the kept answers belong to different documents. Grading happens at the
+end of the run as usual; `--grade <dir>` alone re-grades without sending requests.
