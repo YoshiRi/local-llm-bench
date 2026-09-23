@@ -1,0 +1,6 @@
+FROM /Users/yoshiri/.ollama/models/blobs/sha256-77013d4adbd65d0327b0f4254e9d94c513c9297c985abe836a338236c64a6bb7
+PARAMETER num_ctx 32768
+PARAMETER temperature 0.6
+PARAMETER top_k 20
+PARAMETER top_p 0.95
+PARAMETER draft_num_predict 2
