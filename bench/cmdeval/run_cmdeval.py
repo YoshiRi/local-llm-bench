@@ -192,11 +192,17 @@ def do_run(a, sandbox, key, chosen):
                   f"prompt_chars={len(prompt)}")
             continue
         start = time.monotonic()
-        p = subprocess.run(argv, cwd=str(sandbox), env=env, text=True,
-                           capture_output=True, timeout=a.timeout)
-        (a.answers / f"{t['id']}.stdout").write_text(p.stdout, encoding="utf-8")
-        (a.answers / f"{t['id']}.stderr").write_text(p.stderr, encoding="utf-8")
-        print(f"  {t['id']}: exit={p.returncode} {round(time.monotonic()-start,1)}s")
+        try:
+            p = subprocess.run(argv, cwd=str(sandbox), env=env, text=True,
+                               capture_output=True, timeout=a.timeout)
+            out, err, rc = p.stdout, p.stderr, p.returncode
+        except subprocess.TimeoutExpired as e:
+            # 1課題のタイムアウトで実行全体を落とさない。回答ファイルが無ければ採点で不合格になる
+            dec = lambda b: b.decode("utf-8", "replace") if isinstance(b, bytes) else (b or "")
+            out, err, rc = dec(e.stdout), dec(e.stderr) + f"\n[harness] timed out after {a.timeout}s\n", "timeout"
+        (a.answers / f"{t['id']}.stdout").write_text(out, encoding="utf-8")
+        (a.answers / f"{t['id']}.stderr").write_text(err, encoding="utf-8")
+        print(f"  {t['id']}: exit={rc} {round(time.monotonic()-start,1)}s", flush=True)
     if a.dry_run:
         print("[dry-run] no process started, no answer graded")
         return
