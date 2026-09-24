@@ -33,17 +33,6 @@ CLOUD_ONLY = [BuiltinTools.GENERATE_IMAGE, BuiltinTools.SEARCH_WEB, BuiltinTools
               BuiltinTools.SCHEDULE, BuiltinTools.START_SUBAGENT]
 
 
-class PolicyFixedConfig(LocalOpenAIAgentConfig):
-    """google-antigravity 0.1.18 の LocalOpenAIAgentConfig.create_strategy は policies を
-    接続に渡し忘れており、deny_all ですら無視されて全ツールが無確認で走る（2026-09-24確認）。
-    Gemini用の LocalAgentConfig は渡している。生成後の strategy に差し込んで効かせる。"""
-
-    def create_strategy(self, *, tool_runner, hook_runner):
-        s = super().create_strategy(tool_runner=tool_runner, hook_runner=hook_runner)
-        s._policies = list(self.policies)
-        return s
-
-
 def session_dir(ws: str) -> Path:
     d = Path.home() / ".ag-chat" / (Path(ws).name + "-" + hashlib.sha1(ws.encode()).hexdigest()[:8])
     d.mkdir(parents=True, exist_ok=True)
@@ -59,7 +48,8 @@ async def main(a) -> None:
     if a.resume and not conv:
         print("(このディレクトリの保存済み会話が無いので新規で始めます)")
 
-    cfg = PolicyFixedConfig(
+    rules = [policy.allow_all()] if a.yolo else policy.safe_defaults(interactive.ask_user_handler)
+    cfg = LocalOpenAIAgentConfig(
         model=a.model,
         base_url=a.base_url,
         workspaces=[ws],
@@ -69,8 +59,11 @@ async def main(a) -> None:
             title="language", content="Reply in the same language as the user's latest message "
                                       "(Japanese if the user writes Japanese).")]),
         conversation_id=conv,
-        policies=[policy.allow_all()] if a.yolo else policy.safe_defaults(interactive.ask_user_handler),
-        hooks=[interactive.AskQuestionHook()],
+        # google-antigravity 0.1.18 の LocalOpenAIAgentConfig は policies= を接続に渡し忘れ、deny_all すら
+        # 無視して全ツールが無確認で走る（既報 issue #217、未修正）。issue記載の回避策どおり
+        # 同じ規則を policy.enforce() でフックとして渡すと効く（公開APIのみ、2026-09-24確認）。
+        policies=rules,
+        hooks=[policy.enforce(rules), interactive.AskQuestionHook()],
         capabilities=CapabilitiesConfig(enable_subagents=False, disabled_tools=CLOUD_ONLY,
                                         agent_behavior=AgentBehavior.INTERACTIVE),
     )
