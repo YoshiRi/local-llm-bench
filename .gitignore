@@ -11,3 +11,4 @@ __pycache__/
 
 # SemIf checkout (cloned separately; its own venv and HF downloads)
 semif/
+.venv-antigravity/

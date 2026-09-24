@@ -210,3 +210,21 @@ python3 run_ctxeval.py --haystack /private/tmp/ctx-hay --run --resume \
 The haystack must be the same one (`--build` with identical `--lengths`/`--depths`),
 otherwise the kept answers belong to different documents. Grading happens at the
 end of the run as usual; `--grade <dir>` alone re-grades without sending requests.
+
+## Google Antigravity SDK as the agent (cmdeval/giteval)
+
+`antigravity-run.py` wraps the SDK as a one-shot CLI (`claude -p` equivalent):
+cwd becomes the workspace, the model is reached through Ollama's OpenAI-compatible
+`/v1` via `LocalOpenAIAgentConfig` (no Gemini key needed), every tool call is
+approved (`policy.allow_all()`), cloud-only tools are disabled.
+
+```sh
+uv venv --python 3.12 .venv-antigravity   # SDK needs Python >= 3.10
+uv pip install --python .venv-antigravity/bin/python google-antigravity
+
+cd bench/cmdeval
+python3 run_cmdeval.py --sandbox /private/tmp/cmdeval-sbx --run \
+  --cli-command '/path/to/local-llm/.venv-antigravity/bin/python /path/to/local-llm/antigravity-run.py {prompt}' \
+  --answers /private/tmp/cmdeval-ag --timeout 400
+# model: AG_MODEL (default ornith-1.5:35b-a3b-mtp-32k), server: AG_BASE_URL
+```
