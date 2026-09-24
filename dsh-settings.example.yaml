@@ -23,8 +23,7 @@ llm-pi-ai:
       baseURL: http://<MAC_IP>:11434/v1
       defaultInput: [ text, image ] # Qwen3.6 は vision 同梱。dsh は既定 text のみなので画像添付を許可する（Ornith 側には付けない）
       models:
-        - id: qwen3.6:35b-a3b-mtp-q4_K_M-32k # MTP投機デコード版GGUF、num_ctx 32768。thinking/コードで37〜41 tok/s(Ornith級)
-          contextWindow: 32768 # Ollama は窓超過でエラーを返さず黙って切るので、dsh に窓を教えて自動圧縮を効かせる
+      # qwen3.6:35b-a3b-mtp-q4_K_M-32k は 2026-09-24 にSSDへ退避（ollama_restore.py で戻せる）
       # 無印タグ（num_ctx 既定 4096）は dsh の初回プロンプト(約7.9k)すら入らないので登録しない
         - id: ornith-1.5:35b-a3b-mtp-32k # Ornith-1.5 35B-A3B の MTP版GGUF をOllamaに取り込んだもの。34〜36 tok/s
           contextWindow: 32768 # vision非対応（projector層がレジストリ側で壊れて取得不能）。画像は投げないこと
